@@ -7,7 +7,7 @@ import { IColDefinition } from "./components/dataTable/types";
 import moment from "moment";
 
 async function getData() {
-  const res = await fetch("http://localhost:3000/api/order-history");
+  const res = await fetch("http://127.0.0.1:3000/api/order-history");
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
