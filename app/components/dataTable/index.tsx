@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { BiCaretUp, BiCaretDown } from "react-icons/bi";
 import { IProp } from "./types";
+import TableLoader from "./loader";
 
 export default function DataTable({
   caption = "DataTable",
@@ -90,87 +91,91 @@ export default function DataTable({
   return (
     <Box m="5">
       <Heading fontSize="2xl">{caption}</Heading>
-      <TableContainer mt="5">
-        <Table variant="striped" colorScheme="blackAlpha">
-          <TableCaption placement="bottom">{caption}</TableCaption>
-          <Thead>
-            <Tr>
-              {colDefinition.map((col, idx) => (
-                <Th
-                  key={`${col.header} + ${idx}`}
-                  onClick={() => {
-                    if (col.sortable && sortable) {
-                      handleSort(col.ref);
-                    }
-                  }}
-                  _hover={{
-                    cursor: col.sortable ? "pointer" : "",
-                  }}
-                >
-                  <Flex alignItems="center" gap="3">
-                    {col.header}
-                    {sortType !== 0 &&
-                      col.sortable &&
-                      col.ref === sortColumn && (
-                        <Flex
-                          flexDir="column"
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          <Icon
-                            as={BiCaretUp}
-                            fontSize="xs"
-                            mb="-1.5"
-                            color={sortType === 1 ? "black" : "gray.400"}
-                          />
-                          <Icon
-                            as={BiCaretDown}
-                            fontSize="xs"
-                            color={sortType === -1 ? "black" : "gray.400"}
-                          />
-                        </Flex>
-                      )}
-                  </Flex>
-                </Th>
-              ))}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {dataForGrid.map((d, idx) => (
-              <Tr key={`${idx}`}>
-                {colDefinition.map((r, ind) => (
-                  <Td key={ind}>{r.render({ value: d[r.ref], data: d })}</Td>
+      {dataForGrid.length === 0 ? (
+        <TableLoader />
+      ) : (
+        <TableContainer mt="5">
+          <Table variant="striped" colorScheme="blackAlpha">
+            <TableCaption placement="bottom">{caption}</TableCaption>
+            <Thead>
+              <Tr>
+                {colDefinition.map((col, idx) => (
+                  <Th
+                    key={`${col.header} + ${idx}`}
+                    onClick={() => {
+                      if (col.sortable && sortable) {
+                        handleSort(col.ref);
+                      }
+                    }}
+                    _hover={{
+                      cursor: col.sortable ? "pointer" : "",
+                    }}
+                  >
+                    <Flex alignItems="center" gap="3">
+                      {col.header}
+                      {sortType !== 0 &&
+                        col.sortable &&
+                        col.ref === sortColumn && (
+                          <Flex
+                            flexDir="column"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Icon
+                              as={BiCaretUp}
+                              fontSize="xs"
+                              mb="-1.5"
+                              color={sortType === 1 ? "black" : "gray.400"}
+                            />
+                            <Icon
+                              as={BiCaretDown}
+                              fontSize="xs"
+                              color={sortType === -1 ? "black" : "gray.400"}
+                            />
+                          </Flex>
+                        )}
+                    </Flex>
+                  </Th>
                 ))}
               </Tr>
-            ))}
-          </Tbody>
-          {pagination && (
-            <Tfoot>
-              <Tr>
-                <Th>
-                  <Flex alignItems="center" justifyContent="center" gap="3">
-                    <IconButton
-                      aria-label="previous"
-                      icon={<Icon as={HiChevronLeft} fontSize="lg" />}
-                      variant="ghost"
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      isDisabled={currentPage === 0}
-                    />
-                    <Text fontSize="md">{currentPage + 1}</Text>
-                    <IconButton
-                      aria-label="next"
-                      icon={<Icon as={HiChevronRight} fontSize="lg" />}
-                      variant="ghost"
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                      isDisabled={currentPage === totalPageCount}
-                    />
-                  </Flex>
-                </Th>
-              </Tr>
-            </Tfoot>
-          )}
-        </Table>
-      </TableContainer>
+            </Thead>
+            <Tbody>
+              {dataForGrid.map((d, idx) => (
+                <Tr key={`${idx}`}>
+                  {colDefinition.map((r, ind) => (
+                    <Td key={ind}>{r.render({ value: d[r.ref], data: d })}</Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+            {pagination && (
+              <Tfoot>
+                <Tr>
+                  <Th>
+                    <Flex alignItems="center" justifyContent="center" gap="3">
+                      <IconButton
+                        aria-label="previous"
+                        icon={<Icon as={HiChevronLeft} fontSize="lg" />}
+                        variant="ghost"
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        isDisabled={currentPage === 0}
+                      />
+                      <Text fontSize="md">{currentPage + 1}</Text>
+                      <IconButton
+                        aria-label="next"
+                        icon={<Icon as={HiChevronRight} fontSize="lg" />}
+                        variant="ghost"
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        isDisabled={currentPage === totalPageCount}
+                      />
+                    </Flex>
+                  </Th>
+                </Tr>
+              </Tfoot>
+            )}
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 }
