@@ -61,7 +61,7 @@ const page = async () => {
     {
       ref: "status",
       header: "Status",
-      sortable: false,
+      sortable: true,
       render: ({ value }: any) => {
         return (
           <Badge
